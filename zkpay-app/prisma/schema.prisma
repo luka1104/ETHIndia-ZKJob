@@ -1,0 +1,25 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("NEXT_PUBLIC_DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id          Int        @id @default(autoincrement())
+  address     String     @unique
+  nickname    String
+  isCompany   Boolean    @default(false)
+  description String
+  IntroCard   IntroCard?
+}
+
+model IntroCard {
+  id         Int      @id @default(autoincrement())
+  userId     Int      @unique
+  imagePaths String[]
+  videoPath  String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
