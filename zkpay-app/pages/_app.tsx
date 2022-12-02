@@ -1,9 +1,10 @@
 import type { AppProps } from 'next/app'
+import React from 'react'
 import { ChakraProvider } from '@chakra-ui/react'
 import { getDefaultProvider } from 'ethers';
 import { createClient, WagmiConfig } from 'wagmi';
-import Header from 'components/Header';
 import { AccountProvider } from 'contexts/accountContext';
+import { Layout } from 'layout';
 
 const client = createClient({
   autoConnect: false,
@@ -15,8 +16,9 @@ export default function App({ Component, pageProps }: AppProps) {
     <WagmiConfig client={client}>
       <ChakraProvider>
         <AccountProvider>
-          <Header />
-          <Component {...pageProps} />
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
         </AccountProvider>
       </ChakraProvider>
     </WagmiConfig>

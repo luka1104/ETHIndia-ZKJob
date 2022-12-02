@@ -24,6 +24,7 @@ export const AccountProvider = ({ children }: Props) => {
   const [loading, setLoading] = useState<boolean>(false)
 
   const getUser = async () => {
+    setLoading(true)
     const config = {
       headers: {
         'Content-Type': 'application/json',
@@ -39,6 +40,7 @@ export const AccountProvider = ({ children }: Props) => {
       })
       .catch(e => {
         reject(e)
+        setLoading(false)
         throw new Error(e)
       })
     })

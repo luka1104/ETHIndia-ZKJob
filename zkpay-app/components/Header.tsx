@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Box, Center, Button, Icon, Text, Link, useColorMode } from '@chakra-ui/react';
 import Head from 'next/head';
 import NextLink from 'next/link';
@@ -7,8 +7,10 @@ import { BiWallet } from 'react-icons/bi';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import { shortenEOAName } from 'utils/shortenEOA';
+import { AccountContext } from 'contexts/accountContext';
 
 const Header: React.FC = () => {
+  const { setLoading } = useContext(AccountContext)
   const { address, isConnected } = useAccount();
   const { colorMode, toggleColorMode } = useColorMode()
   const { connect } = useConnect({
@@ -48,7 +50,7 @@ const Header: React.FC = () => {
               <Button
                 leftIcon={<BiWallet />}
                 colorScheme="orange"
-                onClick={() => connect()}
+                onClick={() => {connect(), setLoading(true)}}
               >
                 Connect Wallet
               </Button>

@@ -1,5 +1,5 @@
 import { NextPage } from 'next'
-import { Input, Box, Center, Flex, Text, Radio, RadioGroup, Stack, Textarea, Button } from '@chakra-ui/react'
+import { Input, Box, Center, Flex, Text, Radio, RadioGroup, Stack, Textarea, Button, useToast } from '@chakra-ui/react'
 import React, { useState, useContext } from 'react'
 import axios from 'axios'
 import { useAccount } from 'wagmi';
@@ -12,7 +12,10 @@ const create: NextPage = () => {
   const [description, setDescription] = useState<string>('')
   const [value, setValue] = useState<string>('1')
 
+  const toast = useToast()
+
   const handleSubmit = async () => {
+    setLoading(true)
     const config = {
       headers: {
         'Content-Type': 'application/json',
@@ -29,7 +32,16 @@ const create: NextPage = () => {
       .then(response => {
         resolve(response)
         if(response.data) setUser(response.data.user)
-        if(response.status === 200) setLoading(false)
+        if(response.status === 200) {
+          setLoading(false)
+          toast({
+            title: 'Account created.',
+            description: 'Account successfully created.',
+            status: 'success',
+            duration: 9000,
+            isClosable: true,
+          })
+        }
         console.log(response);
       })
       .catch(e => {
