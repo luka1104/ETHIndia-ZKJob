@@ -5,7 +5,7 @@ import axios from 'axios'
 import { useAccount } from 'wagmi';
 import { AccountContext } from 'contexts/accountContext';
 
-const create: NextPage = () => {
+const Create: NextPage = () => {
   const { address } = useAccount();
   const { setUser, setLoading } = useContext(AccountContext)
   const [nickname, setNickname] = useState<string>('')
@@ -91,4 +91,4 @@ const create: NextPage = () => {
   )
 }
 
-export default create
+export default Create
