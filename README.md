@@ -1,2 +1,2 @@
 # ETHIndia-ZKPay
-# Payment solution with zkbob
+Payment solution with zkbob
