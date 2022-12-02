@@ -18,11 +18,14 @@
     "@types/react-dom": "18.0.9",
     "eslint": "8.28.0",
     "eslint-config-next": "13.0.6",
+    "ethers": "^5.7.2",
     "framer-motion": "^7.6.18",
     "next": "13.0.6",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "typescript": "4.9.3"
+    "react-icons": "^4.7.1",
+    "typescript": "4.9.3",
+    "wagmi": "^0.8.9"
   },
   "devDependencies": {
     "prisma": "^4.7.1"
