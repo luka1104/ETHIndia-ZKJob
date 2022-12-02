@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Box, Center, Button, Icon, Text, Link } from '@chakra-ui/react';
 import Head from 'next/head';
 import NextLink from 'next/link';
@@ -15,11 +15,6 @@ const Header: React.FC = () => {
   });
   const { disconnect } = useDisconnect();
   const shortAddress = shortenEOAName(address);
-
-  useEffect(() => {
-    if(!address) return
-    console.log(address);
-  }, [address])
   return (
     <>
       <Head>
