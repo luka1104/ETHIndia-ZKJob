@@ -2,6 +2,7 @@
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
     "address" TEXT NOT NULL,
+    "imagePath" TEXT NOT NULL,
     "nickname" TEXT NOT NULL,
     "isCompany" BOOLEAN NOT NULL DEFAULT false,
     "description" TEXT NOT NULL,
