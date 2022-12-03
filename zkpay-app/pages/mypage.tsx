@@ -12,17 +12,31 @@ import {
   Flex,
   Avatar,
   Icon,
+  Button,
+  useToast,
 } from '@chakra-ui/react';
 import { LivepeerPlayer } from "components/LivepeerPlayer";
 import { AccountContext } from "contexts/accountContext";
-import { BsFillCloudUploadFill } from 'react-icons/bs'
+import { BsFillCloudUploadFill, BsFillPatchCheckFill } from 'react-icons/bs'
+import { useRouter } from "next/router";
+import { useAccount, useConnect } from "wagmi";
+import { InjectedConnector } from "@wagmi/core";
 
 const Mypage: NextPage = () => {
+  const { user, profile, getUser, setLoading } = useContext(AccountContext)
+  const router = useRouter();
+  const toast = useToast()
   const imageRef = useRef(null)
   const videoRef = useRef(null)
+  const [nickname, setNickname] = useState<string>('')
+  const [description, setDescription] = useState<string>('')
   const [videoPath, setVideoPath] = useState<string>('')
   const [imagePath, setImagePath] = useState<string>('')
-  const { setLoading } = useContext(AccountContext)
+  const [isUpdated, setIsUpdated] = useState<boolean>(false)
+  const { isConnected } = useAccount();
+  const { connect } = useConnect({
+    connector: new InjectedConnector(),
+  });
 
   const sign_message = async () => {
     (window as any).ethereum.request({ method: "eth_requestAccounts" }).then((res: any) => {
@@ -79,21 +93,80 @@ const Mypage: NextPage = () => {
     setImagePath('https://ipfs.io/ipfs/' + output.data.Hash)
   }
 
+  const handleSubmit = async () => {
+    if(!user) return
+    setLoading(true)
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    }
+    const data = {
+      userId: user.id,
+      imagePath: imagePath,
+      videoPath: videoPath,
+    }
+    return new Promise((resolve, reject) => {
+      axios.post('/api/postProfile', data, config)
+      .then(response => {
+        resolve(response)
+        // if(response.data) setUser(response.data.user)
+        if(response.status === 200) {
+          setLoading(false)
+          toast({
+            title: 'Account created.',
+            description: 'Account successfully created.',
+            status: 'success',
+            duration: 9000,
+            isClosable: true,
+          })
+          // router.push('/mypage')
+        }
+        console.log(response);
+      })
+      .catch(e => {
+        reject(e)
+        throw new Error(e)
+      })
+    })
+  }
+
   useEffect(() => {
     if(!videoPath) return
     setLoading(false)
+    setIsUpdated(true)
   }, [videoPath])
 
   useEffect(() => {
     if(!imagePath) return
     setLoading(false)
+    setIsUpdated(true)
   }, [imagePath])
+
+  useEffect(() => {
+    if(!isConnected) connect()
+  }, [])
+
+  useEffect(() => {
+    if(!user) return
+    setNickname(user.nickname)
+    setDescription(user.description)
+  }, [user])
+
+  useEffect(() => {
+    if(!profile) return
+    setImagePath(profile.imagePath)
+    setVideoPath(profile.videoPath)
+  }, [profile])
 
   return (
     <>
       <Box maxW="700px" mx="auto">
+        <Center fontSize='3xl' fontWeight='bold' mt='20px'>
+          Profile
+        </Center>
         {videoPath ? (
-          <Box maxW="700px" mx="auto" my="20">
+          <Box maxW="700px" mx="auto" my="10">
             <LivepeerPlayer
               url={
                 videoPath
@@ -102,7 +175,7 @@ const Mypage: NextPage = () => {
           </Box>
         ) : (
           <Center
-            my="20"
+            my="10"
             bg="#F0F0F0"
             h="400px"
             w="700px"
@@ -133,27 +206,34 @@ const Mypage: NextPage = () => {
             <Avatar
               size="lg"
               m="2"
-              name="Dan Abrahmov"
+              name={nickname}
               src={imagePath ? imagePath : 'https://pngimg.com/uploads/plus/plus_PNG106.png'}
               onClick={() => {
                 //@ts-ignore
                 imageRef.current ? imageRef.current.click() : null;
               }}
             />
-            <Text fontSize="lg">Dan Abrahmov</Text>
+            <Text fontSize="lg" fontWeight='semibold' ml='10px'>{nickname}</Text>
+            <Icon
+              color="#1C9BEF"
+              ml="10px"
+              fontSize='20px'
+              as={BsFillPatchCheckFill}
+            />
           </Flex>
         </Box>
         <Box>
           <Text fontSize="md">
-            Loren ipsun dolor sit anet, consectetur adipisci elit, sed eiusnod
-            tenpor incidunt ut labore et dolore nagna aliqua. Ut enin ad ninin
-            venian, quis nostrun exercitationen ullan corporis suscipit
-            laboriosan, nisi ut aliquid ex ea connodi consequatur. Quis aute
-            iure reprehenderit in voluptate velit esse cillun dolore eu fugiat
-            nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt
-            in culpa qui officia deserunt nollit anin id est laborun.
+            {description}
           </Text>
         </Box>
+        {isUpdated && (
+          <Center mt='40px' mb='40px'>
+            <Button colorScheme='orange' disabled={!imagePath || !videoPath} onClick={handleSubmit}>
+              Save Changes
+            </Button>
+          </Center>
+        )}
       </Box>
     </>
   );
