@@ -63,7 +63,7 @@ const Huddle = () => {
             <Chat
               account={address} //user address
               supportAddress={query.address as string} //support address
-              apiKey="jVPMCRom1B.iDRMswdehJG7NpHDiECIHwYMMv6k2KzkPJscFIDyW8TtSnk4blYnGa8DIkfuacU0"
+              apiKey={process.env.NEXT_PUBLIC_HUDDLE_KEY}
               env="staging"
             />
           )}
