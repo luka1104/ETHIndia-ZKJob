@@ -58,54 +58,16 @@ const Huddle = () => {
   return (
     <div className="App">
       <div className="container">
-        <div>
-          {address && query.address && (
-            <Chat
-              account={address} //user address
-              supportAddress={query.address as string} //support address
-              apiKey={process.env.NEXT_PUBLIC_HUDDLE_KEY}
-              env="staging"
-            />
-          )}
-          <br />
-
-          {Object.keys(huddleIframeApp.methods)
-            .filter((key) => !["sendReaction", "connectWallet"].includes(key))
-            .map((key) => (
-              <button
-                key={key}
-                onClick={() => {
-                  huddleIframeApp.methods[key as HuddleClientMethodName]();
-                }}
-              >
-                {key}
-              </button>
-            ))}
-        </div>
-
-        <HuddleIframe config={iframeConfig} />
+        {address && query.address && (
+          <Chat
+            account={address} //user address
+            supportAddress={query.address as string} //support address
+            apiKey={process.env.NEXT_PUBLIC_HUDDLE_KEY}
+            env="staging"
+          />
+        )}
         <br />
-        {reactions.map((reaction) => (
-          <button
-            key={reaction}
-            onClick={() => huddleIframeApp.methods.sendReaction(reaction)}
-          >
-            {reaction}
-          </button>
-        ))}
-
-        <input
-          type="text"
-          value={walletAddress}
-          onChange={(e) => setWalletAddress(e.target.value)}
-          placeholder="Wallet Address"
-        />
-
-        <button
-          onClick={() => huddleIframeApp.methods.connectWallet(walletAddress)}
-        >
-          Connect Wallet
-        </button>
+        <HuddleIframe config={iframeConfig} />
       </div>
     </div>
   );
