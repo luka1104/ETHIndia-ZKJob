@@ -1,8 +1,18 @@
 import { NextPage } from "next";
 import { LivepeerPlayer } from "components/LivepeerPlayer";
-import { Avatar, Box, Text, Flex, Spacer } from "@chakra-ui/react";
+import {
+  Avatar,
+  Button,
+  Box,
+  Center,
+  Image,
+  Text,
+  Flex,
+  useColorMode,
+} from "@chakra-ui/react";
 
 const Profile: NextPage = () => {
+  const { colorMode } = useColorMode();
   return (
     <>
       <Box maxW="700px" mx="auto">
@@ -35,6 +45,38 @@ const Profile: NextPage = () => {
             in culpa qui officia deserunt nollit anin id est laborun.
           </Text>
         </Box>
+        <Center>
+          <Button
+            rightIcon={
+              <Image
+                src={
+                  colorMode === "light"
+                    ? "/images/push.png"
+                    : "/images/push_w.png"
+                }
+                h="25px"
+              />
+            }
+            m="5"
+          >
+            Chat with{" "}
+          </Button>
+          <Button
+            rightIcon={
+              <Image
+                src={
+                  colorMode === "light"
+                    ? "/images/huddle01_b.png"
+                    : "/images/huddle01.png"
+                }
+                h="20px"
+              />
+            }
+            m="5"
+          >
+            Meeting with{" "}
+          </Button>
+        </Center>
       </Box>
     </>
   );
