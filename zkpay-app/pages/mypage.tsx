@@ -25,18 +25,21 @@ import {
 import { useRouter } from "next/router";
 import { useAccount, useConnect } from "wagmi";
 import { InjectedConnector } from "@wagmi/core";
+import * as jose from 'jose';
 
 const Mypage: NextPage = () => {
-  const { user, profile, getUser, setLoading } = useContext(AccountContext);
+  const { user, profile, getUser, setUser, setLoading } = useContext(AccountContext)
   const router = useRouter();
-  const toast = useToast();
-  const imageRef = useRef(null);
-  const videoRef = useRef(null);
-  const [nickname, setNickname] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
-  const [videoPath, setVideoPath] = useState<string>("");
-  const [imagePath, setImagePath] = useState<string>("");
-  const [isUpdated, setIsUpdated] = useState<boolean>(false);
+  const { query } = useRouter();
+  const toast = useToast()
+  const imageRef = useRef(null)
+  const videoRef = useRef(null)
+  const [nickname, setNickname] = useState<string>('')
+  const [description, setDescription] = useState<string>('')
+  const [videoPath, setVideoPath] = useState<string>('')
+  const [imagePath, setImagePath] = useState<string>('')
+  const [isUpdated, setIsUpdated] = useState<boolean>(false)
+  const [verified, setVerified] = useState(false);
   const { isConnected } = useAccount();
   const { connect } = useConnect({
     connector: new InjectedConnector(),
@@ -151,6 +154,58 @@ const Mypage: NextPage = () => {
         });
     });
   };
+
+  const verifyUser = async () => {
+    if(!user) return
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    }
+    return new Promise((resolve, reject) => {
+      axios.post('/api/verify', user.id, config)
+      .then(response => {
+        resolve(response)
+        if(response.data) setUser(response.data.user)
+        if(response.status === 200) {
+          setLoading(false)
+          toast({
+            title: 'Account created.',
+            description: 'Account successfully created.',
+            status: 'success',
+            duration: 9000,
+            isClosable: true,
+          })
+        }
+        console.log(response);
+      })
+      .catch(e => {
+        reject(e)
+        throw new Error(e)
+      })
+    })
+  }
+  const token = query.verification_jwt || '';
+
+  const verify = async () => {
+    const jsonKeys = await (await fetch('https://developer.worldcoin.org/api/v1/jwks')).json()
+    const kid = jose.decodeProtectedHeader(token).kid;
+    const jsonKey = jsonKeys.keys.find((key: any) => key.kid === kid);
+    const publicKey = await jose.importJWK(jsonKey, "PS256")
+    //@ts-ignore
+    const { payload } = await jose.jwtVerify(token, publicKey, { issuer: 'https://developer.worldcoin.org' });
+    console.log(payload.verified);
+    console.log(payload.signal);
+    const signal = payload.signal as string;
+    if(payload.verified === true) {
+      setVerified(payload.verified);
+      verifyUser()
+    }
+  }
+  if(query.success) {
+    verify();
+    console.log('verifing');
+  }
 
   useEffect(() => {
     if (!videoPath) return;
