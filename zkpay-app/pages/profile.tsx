@@ -11,10 +11,46 @@ import {
   useColorMode,
   Wrap,
   WrapItem,
+  Icon,
 } from "@chakra-ui/react";
 import { RiMailSendLine } from "react-icons/ri";
+import type { GetServerSideProps } from 'next';
+import prisma from '../lib/prisma';
+import { User, Profile } from "@prisma/client";
+import {
+  BsFillCloudUploadFill,
+  BsPatchCheckFill,
+  BsPatchQuestion,
+} from "react-icons/bs";
 
-const Profile: NextPage = () => {
+export const getServerSideProps: GetServerSideProps<Props> = async ( context ) => {
+  const id = JSON.parse(context.query.id as string);
+  const userRaw = await prisma.user.findUnique({
+    where: {
+      id: id
+    },
+  })
+  const user = JSON.parse(JSON.stringify(userRaw));
+  const profileRaw = await prisma.profile.findUnique({
+    where: {
+      userId: id
+    },
+  })
+  const profile = JSON.parse(JSON.stringify(profileRaw));
+  return {
+    props: {
+      user,
+      profile,
+    },
+  };
+};
+
+type Props = {
+  user: User;
+  profile: Profile
+};
+
+const Profile: NextPage<Props> = ({ user, profile }) => {
   const { colorMode } = useColorMode();
   return (
     <>
@@ -22,7 +58,7 @@ const Profile: NextPage = () => {
         <Box mx="auto" my="20">
           <LivepeerPlayer
             url={
-              "https://ipfs.io/ipfs/QmWY8DSGsqsiJYs3dab5mYFwTcp2YiUMecYn1h8iVqHwjB"
+              profile.videoPath
             }
             autoPlay={true}
           />
@@ -32,21 +68,22 @@ const Profile: NextPage = () => {
             <Avatar
               size="lg"
               m="2"
-              name="Dan Abrahmov"
-              src="https://bit.ly/dan-abramov"
+              name={user.nickname}
+              src={profile.imagePath}
             />
-            <Text fontSize="lg">Dan Abrahmov</Text>
+            <Text fontSize="lg">{user.nickname}</Text>
+            <Icon
+              opacity={user.isVerified ? '1' : '0'}
+              color="#1C9BEF"
+              ml="10px"
+              fontSize="20px"
+              as={BsPatchCheckFill}
+            />
           </Flex>
         </Box>
         <Box>
           <Text fontSize="md">
-            Loren ipsun dolor sit anet, consectetur adipisci elit, sed eiusnod
-            tenpor incidunt ut labore et dolore nagna aliqua. Ut enin ad ninin
-            venian, quis nostrun exercitationen ullan corporis suscipit
-            laboriosan, nisi ut aliquid ex ea connodi consequatur. Quis aute
-            iure reprehenderit in voluptate velit esse cillun dolore eu fugiat
-            nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt
-            in culpa qui officia deserunt nollit anin id est laborun.
+            {user.description}
           </Text>
         </Box>
         <Wrap spacing="5" my="10">

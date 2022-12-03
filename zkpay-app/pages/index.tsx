@@ -95,7 +95,7 @@ const Index: NextPage<Props> = ({ users, profiles }) => {
                         colorScheme="blue"
                         m="auto"
                         onClick={() =>
-                          router.push(`/profile/${profile!.id}`)
+                          router.push(`/profile?id=${user.id}`)
                         }
                       >
                         Learn More & Contact
