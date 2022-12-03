@@ -24,7 +24,7 @@ const livepeerTheme: ThemeConfig = {
   },
 };
 
-const Plofile: NextPage = () => {
+const Profile: NextPage = () => {
   return (
     <Box maxW="700px" mx="auto" my="20">
       <LivepeerConfig client={livepeerClient} theme={livepeerTheme}>
@@ -38,4 +38,4 @@ const Plofile: NextPage = () => {
   );
 };
 
-export default Plofile;
+export default Profile;
