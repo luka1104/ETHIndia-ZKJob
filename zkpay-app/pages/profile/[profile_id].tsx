@@ -21,6 +21,7 @@ const Profile: NextPage = () => {
             url={
               "https://ipfs.io/ipfs/QmWY8DSGsqsiJYs3dab5mYFwTcp2YiUMecYn1h8iVqHwjB"
             }
+            autoPlay={true}
           />
         </Box>
         <Box>

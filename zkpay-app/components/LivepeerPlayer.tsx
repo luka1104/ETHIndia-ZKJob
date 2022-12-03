@@ -4,9 +4,10 @@ import { useMemo, useState } from "react";
 
 interface Props {
   url: string;
+  autoPlay: boolean;
 }
 
-export const LivepeerPlayer: React.FC<Props> = ({ url }) => {
+export const LivepeerPlayer: React.FC<Props> = ({ url, autoPlay }) => {
   const idParsed = useMemo(() => parseCid(url) ?? parseArweaveTxId(url), [url]);
   return (
     <>
@@ -14,8 +15,9 @@ export const LivepeerPlayer: React.FC<Props> = ({ url }) => {
         <Player
           title={idParsed.id}
           src={url}
-          autoPlay
+          autoPlay={autoPlay}
           muted
+          showTitle={false}
           autoUrlUpload={{
             fallback: true,
             ipfsGateway: "https://cloudflare-ipfs.com",
