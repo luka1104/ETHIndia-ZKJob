@@ -16,6 +16,7 @@ export interface AccountContextInterface {
   loading: boolean
   setLoading: Function
   getUser: Function
+  isCompany: boolean
 }
 export const AccountContext = React.createContext<AccountContextInterface>({} as AccountContextInterface);
 
@@ -25,6 +26,7 @@ export const AccountProvider = ({ children }: Props) => {
   const [user, setUser] = useState<User>()
   const [profile, setProfile] = useState<Profile>()
   const [loading, setLoading] = useState<boolean>(false)
+  const [isCompany, setIsCompany] = useState<boolean>(false)
 
   const getUser = async () => {
     setLoading(true)
@@ -42,7 +44,8 @@ export const AccountProvider = ({ children }: Props) => {
           router.replace('/create')
         } else {
           if(response.data) setUser(response.data.user)
-          if(response.status === 200) getProfile(response.data.user)
+          if(response.status === 200) getProfile(response.data.user, response.data.isCompany)
+          if(response.data.isCompany) setIsCompany(true)
         }
       })
       .catch(e => {
@@ -53,15 +56,19 @@ export const AccountProvider = ({ children }: Props) => {
     })
   }
 
-  const getProfile = async (user: User) => {
+  const getProfile = async (user: User, isCompany: boolean) => {
     setLoading(true)
     const config = {
       headers: {
         'Content-Type': 'application/json',
       }
     }
+    const data = {
+      userId: user.id,
+      isCompany: isCompany,
+    }
     return new Promise((resolve, reject) => {
-      axios.post('/api/getProfile', user.id, config)
+      axios.post('/api/getProfile', data, config)
       .then(response => {
         resolve(response)
         if(response.data) setProfile(response.data.profile)
@@ -91,6 +98,7 @@ export const AccountProvider = ({ children }: Props) => {
         loading,
         setLoading,
         getUser,
+        isCompany,
       }}
     >
       {children}

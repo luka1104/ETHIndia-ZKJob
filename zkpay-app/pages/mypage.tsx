@@ -30,7 +30,7 @@ import { InjectedConnector } from "@wagmi/core";
 import * as jose from 'jose';
 
 const Mypage: NextPage = () => {
-  const { user, profile, getUser, setUser, setLoading } = useContext(AccountContext)
+  const { user, profile, setUser, setLoading, isCompany } = useContext(AccountContext)
   const router = useRouter();
   const { query } = useRouter();
   const toast = useToast()
@@ -128,6 +128,7 @@ const Mypage: NextPage = () => {
     };
     const data = {
       userId: user.id,
+      isCompany: isCompany,
       imagePath: imagePath,
       videoPath: videoPath,
     };
