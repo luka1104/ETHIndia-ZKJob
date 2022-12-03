@@ -17,102 +17,103 @@ import {
 } from "@chakra-ui/react";
 import { BsFillPatchCheckFill } from "react-icons/bs";
 import { LivepeerPlayer } from "components/LivepeerPlayer";
+import { NextPage } from "next";
+import type { GetServerSideProps } from 'next';
+import prisma from '../lib/prisma';
+import { User, Profile } from "@prisma/client";
 
-export default function Home() {
+export const getServerSideProps: GetServerSideProps<Props> = async () => {
+  const usersRaw = await prisma.user.findMany()
+  const users = JSON.parse(JSON.stringify(usersRaw));
+  const profilesRaw = await prisma.profile.findMany()
+  const profiles = JSON.parse(JSON.stringify(profilesRaw));
+  return {
+    props: {
+      users,
+      profiles,
+    },
+  };
+};
+
+type Props = {
+  users: User[];
+  profiles: Profile[]
+};
+
+const Index: NextPage<Props> = ({ users, profiles }) => {
   const router = useRouter();
 
-  const profiles = [
-    {
-      profileId: "1",
-      videoUrl:
-        "https://ipfs.io/ipfs/QmWY8DSGsqsiJYs3dab5mYFwTcp2YiUMecYn1h8iVqHwjB",
-      profileName: "Luka",
-      worldCoinVerify: true,
-    },
-    {
-      profileId: "2",
-      videoUrl:
-        "https://ipfs.io/ipfs/QmWY8DSGsqsiJYs3dab5mYFwTcp2YiUMecYn1h8iVqHwjB",
-      profileName: "Shun",
-      worldCoinVerify: false,
-    },
-    {
-      profileId: "3",
-      videoUrl:
-        "https://ipfs.io/ipfs/QmWY8DSGsqsiJYs3dab5mYFwTcp2YiUMecYn1h8iVqHwjB",
-      profileName: "Yusuke",
-      worldCoinVerify: true,
-    },
-    {
-      profileId: "4",
-      videoUrl:
-        "https://ipfs.io/ipfs/QmWY8DSGsqsiJYs3dab5mYFwTcp2YiUMecYn1h8iVqHwjB",
-      profileName: "Daisuke",
-      worldCoinVerify: false,
-    },
-  ];
-  return (
+  if(users && profiles) return (
     <>
       <Box maxW="85%" mx="auto">
         <Wrap spacing="5" my="10">
-          {profiles.map((profile) => (
-            <>
-              <WrapItem>
-                <Card maxW="sm">
-                  <CardBody>
-                    <LivepeerPlayer
-                      url={
-                        "https://ipfs.io/ipfs/QmWY8DSGsqsiJYs3dab5mYFwTcp2YiUMecYn1h8iVqHwjB"
-                      }
-                      autoPlay={true}
-                    />
-                    <Stack mt="6" spacing="3">
-                      <Flex alignItems={"center"}>
-                        <Heading size="md">{profile.profileName}</Heading>
-                        {profile.worldCoinVerify && (
-                          <Tooltip
-                            hasArrow
-                            label="Verified by World ID"
-                            bg="gray.300"
-                            color="black"
-                          >
-                            <Box>
-                              <Icon
-                                color="#1C9BEF"
-                                ml="10px"
-                                fontSize="20px"
-                                as={BsFillPatchCheckFill}
-                              />
-                            </Box>
-                          </Tooltip>
-                        )}
-                      </Flex>
-                      <Text>
-                        This sofa is perfect for modern tropical spaces, baroque
-                        inspired spaces, earthy toned spaces and for people who
-                        love a chic design with a sprinkle of vintage design.
-                      </Text>
-                    </Stack>
-                  </CardBody>
-                  <Divider />
-                  <CardFooter>
-                    <Button
-                      variant="ghost"
-                      colorScheme="blue"
-                      m="auto"
-                      onClick={() =>
-                        router.push(`/profile/${profile.profileId}`)
-                      }
-                    >
-                      Learn More & Contact
-                    </Button>
-                  </CardFooter>
-                </Card>
-              </WrapItem>
-            </>
-          ))}
+          {users.map((user: User, key: number) => {
+            let profile = profiles.find(p => p.userId === user.id)
+            console.log(profile);
+            if(!profile) return
+            return (
+              <>
+                <WrapItem key={key}>
+                  <Card maxW="sm">
+                    <CardBody>
+                      <LivepeerPlayer
+                        url={
+                          profile.videoPath
+                        }
+                        autoPlay={true}
+                      />
+                      <Stack mt="6" spacing="3">
+                        <Flex alignItems={"center"}>
+                          <Heading size="md">{user.nickname}</Heading>
+                          {user.isVerified && (
+                            <Tooltip
+                              hasArrow
+                              label="Verified by World ID"
+                              bg="gray.300"
+                              color="black"
+                            >
+                              <Box>
+                                <Icon
+                                  color="#1C9BEF"
+                                  ml="10px"
+                                  fontSize="20px"
+                                  as={BsFillPatchCheckFill}
+                                />
+                              </Box>
+                            </Tooltip>
+                          )}
+                        </Flex>
+                        <Text>
+                          {user.description}
+                        </Text>
+                      </Stack>
+                    </CardBody>
+                    <Divider />
+                    <CardFooter>
+                      <Button
+                        variant="ghost"
+                        colorScheme="blue"
+                        m="auto"
+                        onClick={() =>
+                          router.push(`/profile/${profile!.id}`)
+                        }
+                      >
+                        Learn More & Contact
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                </WrapItem>
+              </>
+            )
+          })}
         </Wrap>
       </Box>
     </>
   );
+
+  return (
+    <></>
+  )
 }
+
+export default Index;
