@@ -19,7 +19,7 @@ const Huddle = () => {
 
   const iframeConfig: IframeConfig = {
     roomUrl: "https://iframe.huddle01.com/test-room",
-    height: "580px",
+    height: "640px",
     width: "100%",
   };
 
