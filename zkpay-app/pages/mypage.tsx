@@ -223,17 +223,17 @@ const Mypage: NextPage = () => {
     if (!user) return;
     setNickname(user.nickname);
     setDescription(user.description);
-    if(query.success) {
-      setLoading(true)
-      verify();
-      console.log('verifing');
-    }
   }, [user]);
 
   useEffect(() => {
     if (!profile) return;
     setImagePath(profile.imagePath);
     setVideoPath(profile.videoPath);
+    if(query.success) {
+      setLoading(true)
+      verify();
+      console.log('verifing');
+    }
   }, [profile]);
 
   return (
