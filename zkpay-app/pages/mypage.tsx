@@ -223,6 +223,11 @@ const Mypage: NextPage = () => {
     if (!user) return;
     setNickname(user.nickname);
     setDescription(user.description);
+    if(query.success) {
+      setLoading(true)
+      verify();
+      console.log('verifing');
+    }
   }, [user]);
 
   useEffect(() => {
@@ -230,14 +235,6 @@ const Mypage: NextPage = () => {
     setImagePath(profile.imagePath);
     setVideoPath(profile.videoPath);
   }, [profile]);
-
-  useEffect(() => {
-    if(query.success) {
-      setLoading(true)
-      verify();
-      console.log('verifing');
-    }
-  }, [query])
 
   return (
     <>
