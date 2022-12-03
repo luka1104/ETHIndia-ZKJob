@@ -13,6 +13,7 @@ import {
   WrapItem,
   Icon,
   Tooltip,
+  useToast,
 } from "@chakra-ui/react";
 import { RiMailSendLine } from "react-icons/ri";
 import type { GetServerSideProps } from 'next';
@@ -24,6 +25,9 @@ import {
 import { useRouter } from "next/router";
 import { useAccount } from "wagmi";
 import { Chat } from "@pushprotocol/uiweb";
+import { useContext } from "react";
+import { AccountContext } from "contexts/accountContext";
+import axios from 'axios'
 
 export const getServerSideProps: GetServerSideProps<Props> = async ( context ) => {
   const id = JSON.parse(context.query.id as string);
@@ -32,7 +36,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ( context ) =
       id: id
     },
   })
-  const user = JSON.parse(JSON.stringify(userRaw));
+  const account = JSON.parse(JSON.stringify(userRaw));
   const profileRaw = await prisma.profile.findUnique({
     where: {
       userId: id
@@ -41,21 +45,61 @@ export const getServerSideProps: GetServerSideProps<Props> = async ( context ) =
   const profile = JSON.parse(JSON.stringify(profileRaw));
   return {
     props: {
-      user,
+      account,
       profile,
     },
   };
 };
 
 type Props = {
-  user: User;
+  account: User;
   profile: Profile
 };
 
-const Profile: NextPage<Props> = ({ user, profile }) => {
+const Profile: NextPage<Props> = ({ account, profile }) => {
+  const { user, setLoading, isCompany } = useContext(AccountContext)
   const router = useRouter()
   const  { address } = useAccount();
   const { colorMode } = useColorMode();
+  const toast = useToast()
+
+  const createOffer = async () => {
+    if (!user) return;
+    setLoading(true);
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const data = {
+      userId: profile.id,
+      companyId: user.id
+    };
+    return new Promise((resolve, reject) => {
+      axios
+        .post("/api/createOffer", data, config)
+        .then((response) => {
+          resolve(response);
+          // if(response.data) setUser(response.data.user)
+          if (response.status === 200) {
+            setLoading(false);
+            toast({
+              title: "Offer created.",
+              description: "Offer successfully created.",
+              status: "success",
+              duration: 9000,
+              isClosable: true,
+            });
+            // router.push('/mypage')
+          }
+          console.log(response);
+        })
+        .catch((e) => {
+          reject(e);
+          throw new Error(e);
+        });
+    });
+  }
   return (
     <>
       <Box maxW="700px" mx="auto">
@@ -72,10 +116,10 @@ const Profile: NextPage<Props> = ({ user, profile }) => {
             <Avatar
               size="lg"
               m="2"
-              name={user.nickname}
+              name={account.nickname}
               src={profile.imagePath}
             />
-            <Text fontSize="lg" fontWeight='semibold' ml='10px'>{user.nickname}</Text>
+            <Text fontSize="lg" fontWeight='semibold' ml='10px'>{account.nickname}</Text>
             <Tooltip
               ml='10px'
               hasArrow
@@ -94,7 +138,7 @@ const Profile: NextPage<Props> = ({ user, profile }) => {
               <Box>
                 <Icon
                   mt='5px'
-                  display={user.isVerified ? 'inline-block' : 'none'}
+                  display={account.isVerified ? 'inline-block' : 'none'}
                   color="#1C9BEF"
                   ml="10px"
                   fontSize="20px"
@@ -106,7 +150,7 @@ const Profile: NextPage<Props> = ({ user, profile }) => {
         </Box>
         <Box>
           <Text fontSize="md">
-            {user.description}
+            {account.description}
           </Text>
         </Box>
         <Wrap spacing="5" my="10">
@@ -129,8 +173,8 @@ const Profile: NextPage<Props> = ({ user, profile }) => {
               <Box zIndex='overlay'>
                 <Chat
                   account={address}
-                  supportAddress={user.address}
-                  modalTitle={`Chat with ${user.nickname}`}
+                  supportAddress={account.address}
+                  modalTitle={`Chat with ${account.nickname}`}
                   apiKey={process.env.NEXT_PUBLIC_HUDDLE_KEY}
                   env="staging"
                 />
@@ -149,13 +193,13 @@ const Profile: NextPage<Props> = ({ user, profile }) => {
                   h="20px"
                 />
               }
-              onClick={() => {router.push(`/huddle?address=${user.address}&nickname=${user.nickname}`)}}
+              onClick={() => {router.push(`/huddle?address=${account.address}&nickname=${account.nickname}`)}}
             >
               Meeting with{" "}
             </Button>
           </WrapItem>
           <WrapItem>
-            <Button rightIcon={<RiMailSendLine />}>Send a offer</Button>
+            <Button rightIcon={<RiMailSendLine />} onClick={createOffer}>Send a offer</Button>
           </WrapItem>
         </Wrap>
       </Box>
