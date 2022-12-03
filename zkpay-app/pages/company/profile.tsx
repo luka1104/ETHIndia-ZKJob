@@ -22,7 +22,6 @@ import {
   BsPatchCheckFill,
 } from "react-icons/bs";
 import { useRouter } from "next/router";
-import { useAccount } from "wagmi";
 
 export const getServerSideProps: GetServerSideProps<Props> = async ( context ) => {
   const id = JSON.parse(context.query.id as string);
@@ -53,7 +52,6 @@ type Props = {
 
 const Profile: NextPage<Props> = ({ user, profile }) => {
   const router = useRouter()
-  const  { address } = useAccount();
   const { colorMode } = useColorMode();
   return (
     <>
@@ -137,7 +135,7 @@ const Profile: NextPage<Props> = ({ user, profile }) => {
                   h="20px"
                 />
               }
-              onClick={() => {router.push(`/huddle?address=${address}`)}}
+              onClick={() => {router.push(`/huddle?address=${user.address}`)}}
             >
               Meeting with{" "}
             </Button>
