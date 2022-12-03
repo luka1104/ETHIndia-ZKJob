@@ -17,7 +17,11 @@ import {
 } from "@chakra-ui/react";
 import { LivepeerPlayer } from "components/LivepeerPlayer";
 import { AccountContext } from "contexts/accountContext";
-import { BsFillCloudUploadFill, BsFillPatchCheckFill } from "react-icons/bs";
+import {
+  BsFillCloudUploadFill,
+  BsPatchCheckFill,
+  BsPatchQuestion,
+} from "react-icons/bs";
 import { useRouter } from "next/router";
 import { useAccount, useConnect } from "wagmi";
 import { InjectedConnector } from "@wagmi/core";
@@ -244,10 +248,17 @@ const Mypage: NextPage = () => {
               {nickname}
             </Text>
             <Icon
-              color="#1C9BEF"
+              color={user?.isVerified ? "#1C9BEF" : "red"}
               ml="10px"
               fontSize="20px"
-              as={BsFillPatchCheckFill}
+              as={user?.isVerified ? BsPatchCheckFill : BsPatchQuestion}
+              onClick={() => {
+                user &&
+                  !user.isVerified &&
+                  router.push(
+                    `${process.env.NEXT_PUBLIC_WORLD_ID_URI}${user.address}`
+                  );
+              }}
             />
           </Flex>
         </Box>
