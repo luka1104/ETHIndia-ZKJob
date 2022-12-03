@@ -22,6 +22,8 @@ import {
   BsPatchCheckFill,
 } from "react-icons/bs";
 import { useRouter } from "next/router";
+import { useAccount } from "wagmi";
+import { Chat } from "@pushprotocol/uiweb";
 
 export const getServerSideProps: GetServerSideProps<Props> = async ( context ) => {
   const id = JSON.parse(context.query.id as string);
@@ -52,11 +54,12 @@ type Props = {
 
 const Profile: NextPage<Props> = ({ user, profile }) => {
   const router = useRouter()
+  const  { address } = useAccount();
   const { colorMode } = useColorMode();
   return (
     <>
       <Box maxW="700px" mx="auto">
-        <Box mx="auto" my="20">
+        <Box mx="auto" my="20" zIndex='base'>
           <LivepeerPlayer
             url={
               profile.videoPath
@@ -108,7 +111,7 @@ const Profile: NextPage<Props> = ({ user, profile }) => {
         </Box>
         <Wrap spacing="5" my="10">
           <WrapItem>
-            <Button
+            {/* <Button
               rightIcon={
                 <Image
                   src={
@@ -121,7 +124,18 @@ const Profile: NextPage<Props> = ({ user, profile }) => {
               }
             >
               Chat with{" "}
-            </Button>
+            </Button> */}
+            {address && (
+              <Box zIndex='overlay'>
+                <Chat
+                  account={address}
+                  supportAddress={user.address}
+                  modalTitle={`Chat with ${user.nickname}`}
+                  apiKey={process.env.NEXT_PUBLIC_HUDDLE_KEY}
+                  env="staging"
+                />
+              </Box>
+            )}
           </WrapItem>
           <WrapItem>
             <Button
@@ -135,7 +149,7 @@ const Profile: NextPage<Props> = ({ user, profile }) => {
                   h="20px"
                 />
               }
-              onClick={() => {router.push(`/huddle?address=${user.address}`)}}
+              onClick={() => {router.push(`/huddle?address=${user.address}&nickname=${user.nickname}`)}}
             >
               Meeting with{" "}
             </Button>
