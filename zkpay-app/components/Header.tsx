@@ -1,8 +1,9 @@
 import React, { useContext } from 'react'
-import { Box, Center, Button, Icon, Text, Link, useColorMode } from '@chakra-ui/react';
+import { Box, Center, Button, Icon, Text, Link, useColorMode, Menu, MenuButton, MenuList, MenuItem } from '@chakra-ui/react';
 import Head from 'next/head';
 import NextLink from 'next/link';
 import { FiSun, FiMoon } from 'react-icons/fi';
+import { BsChevronDown } from 'react-icons/bs';
 import { BiWallet } from 'react-icons/bi';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import { InjectedConnector } from 'wagmi/connectors/injected';
@@ -39,13 +40,15 @@ const Header: React.FC = () => {
               {colorMode === 'light' ? (<Icon as={FiMoon} />) : (<Icon as={FiSun} />) }
             </Button>
             {isConnected ? (
-              <Button
-                leftIcon={<BiWallet />}
-                colorScheme="orange"
-                onClick={() => disconnect()}
-              >
-                {shortAddress}
-              </Button>
+              <Menu>
+                <MenuButton as={Button} leftIcon={<BiWallet />} colorScheme="orange" rightIcon={<BsChevronDown />}>
+                  {shortAddress}
+                </MenuButton>
+                <MenuList>
+                  <MenuItem as={Link} href='/mypage' _hover={{textDecoration: 'none'}}>Mypage</MenuItem>
+                  <MenuItem onClick={() => disconnect()}>disconnect</MenuItem>
+                </MenuList>
+              </Menu>
             ) : (
               <Button
                 leftIcon={<BiWallet />}

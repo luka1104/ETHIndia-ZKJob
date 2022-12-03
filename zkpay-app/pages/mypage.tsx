@@ -134,13 +134,13 @@ const Mypage: NextPage = () => {
   useEffect(() => {
     if(!videoPath) return
     setLoading(false)
-    setIsUpdated(true)
+    if(videoPath !== profile?.videoPath) setIsUpdated(true)
   }, [videoPath])
 
   useEffect(() => {
     if(!imagePath) return
     setLoading(false)
-    setIsUpdated(true)
+    if(imagePath !== profile?.imagePath) setIsUpdated(true)
   }, [imagePath])
 
   useEffect(() => {
