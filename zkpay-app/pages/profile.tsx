@@ -12,15 +12,14 @@ import {
   Wrap,
   WrapItem,
   Icon,
+  Tooltip,
 } from "@chakra-ui/react";
 import { RiMailSendLine } from "react-icons/ri";
 import type { GetServerSideProps } from 'next';
 import prisma from '../lib/prisma';
 import { User, Profile } from "@prisma/client";
 import {
-  BsFillCloudUploadFill,
   BsPatchCheckFill,
-  BsPatchQuestion,
 } from "react-icons/bs";
 
 export const getServerSideProps: GetServerSideProps<Props> = async ( context ) => {
@@ -71,14 +70,33 @@ const Profile: NextPage<Props> = ({ user, profile }) => {
               name={user.nickname}
               src={profile.imagePath}
             />
-            <Text fontSize="lg">{user.nickname}</Text>
-            <Icon
-              opacity={user.isVerified ? '1' : '0'}
-              color="#1C9BEF"
-              ml="10px"
-              fontSize="20px"
-              as={BsPatchCheckFill}
-            />
+            <Text fontSize="lg" fontWeight='semibold' ml='10px'>{user.nickname}</Text>
+            <Tooltip
+              ml='10px'
+              hasArrow
+              label={
+                <Flex>
+                  <Text>
+                    Verified by
+                  </Text>
+                  <Image w='20px' src='/images/worldcoin.png' alt='world coin' />
+                  <Text>
+                    World ID
+                  </Text>
+                </Flex>
+              }
+            >
+              <Box>
+                <Icon
+                  mt='5px'
+                  display={user.isVerified ? 'inline-block' : 'none'}
+                  color="#1C9BEF"
+                  ml="10px"
+                  fontSize="20px"
+                  as={BsPatchCheckFill}
+                />
+              </Box>
+            </Tooltip>
           </Flex>
         </Box>
         <Box>

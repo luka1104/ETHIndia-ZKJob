@@ -14,6 +14,8 @@ import {
   Icon,
   Button,
   useToast,
+  Tooltip,
+  Image,
 } from "@chakra-ui/react";
 import { LivepeerPlayer } from "components/LivepeerPlayer";
 import { AccountContext } from "contexts/accountContext";
@@ -304,19 +306,50 @@ const Mypage: NextPage = () => {
               {nickname}
             </Text>
             {profile && (
-              <Icon
-                color={user?.isVerified ? "#1C9BEF" : "red"}
-                ml="10px"
-                fontSize="20px"
-                as={user?.isVerified ? BsPatchCheckFill : BsPatchQuestion}
-                onClick={() => {
-                  user &&
-                    !user.isVerified &&
-                    router.push(
-                      `${process.env.NEXT_PUBLIC_WORLD_ID_URI}${user.address}`
-                    );
-                }}
-              />
+              <Tooltip
+                ml='10px'
+                hasArrow
+                label={
+                  user?.isVerified ? (
+                    <Flex>
+                      <Text>
+                        Verified by
+                      </Text>
+                      <Image w='20px' src='/images/worldcoin.png' alt='world coin' />
+                      <Text>
+                        World ID
+                      </Text>
+                    </Flex>
+                  ) : (
+                    <Flex>
+                      <Text>
+                        Click to Verify with
+                      </Text>
+                      <Image w='20px' src='/images/worldcoin.png' alt='world coin' />
+                      <Text>
+                        World ID
+                      </Text>
+                    </Flex>
+                  )
+                }
+              >
+                <Box>
+                  <Icon
+                    color={user?.isVerified ? "#1C9BEF" : "red"}
+                    mt='5px'
+                    ml="10px"
+                    fontSize="20px"
+                    as={user?.isVerified ? BsPatchCheckFill : BsPatchQuestion}
+                    onClick={() => {
+                      user &&
+                        !user.isVerified &&
+                        router.push(
+                          `${process.env.NEXT_PUBLIC_WORLD_ID_URI}${user.address}`
+                        );
+                    }}
+                  />
+                </Box>
+              </Tooltip>
             )}
           </Flex>
         </Box>

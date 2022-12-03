@@ -14,6 +14,7 @@ import {
   Heading,
   Divider,
   Tooltip,
+  Image,
 } from "@chakra-ui/react";
 import { BsFillPatchCheckFill } from "react-icons/bs";
 import { LivepeerPlayer } from "components/LivepeerPlayer";
@@ -67,13 +68,23 @@ const Index: NextPage<Props> = ({ users, profiles }) => {
                           <Heading size="md">{user.nickname}</Heading>
                           {user.isVerified && (
                             <Tooltip
+                              ml='10px'
                               hasArrow
-                              label="Verified by World ID"
-                              bg="gray.300"
-                              color="black"
+                              label={
+                                <Flex>
+                                  <Text>
+                                    Verified by
+                                  </Text>
+                                  <Image w='20px' src='/images/worldcoin.png' alt='world coin' />
+                                  <Text>
+                                    World ID
+                                  </Text>
+                                </Flex>
+                              }
                             >
                               <Box>
                                 <Icon
+                                  mt='5px'
                                   color="#1C9BEF"
                                   ml="10px"
                                   fontSize="20px"
