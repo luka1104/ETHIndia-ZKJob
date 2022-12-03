@@ -137,7 +137,7 @@ const Mypage: NextPage = () => {
               src={imagePath ? imagePath : 'https://pngimg.com/uploads/plus/plus_PNG106.png'}
               onClick={() => {
                 //@ts-ignore
-                imageRef.current && !imagePath ? imageRef.current.click() : null;
+                imageRef.current ? imageRef.current.click() : null;
               }}
             />
             <Text fontSize="lg">Dan Abrahmov</Text>
