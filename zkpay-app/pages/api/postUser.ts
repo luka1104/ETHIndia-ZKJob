@@ -7,7 +7,6 @@ const postUser = async (data: any) => {
     data: {
       address: data.address,
       nickname: data.nickname,
-      isCompany: data.isCompany,
       description: data.description,
     },
   });
