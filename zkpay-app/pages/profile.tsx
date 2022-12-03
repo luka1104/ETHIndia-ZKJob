@@ -84,8 +84,8 @@ const Profile: NextPage<Props> = ({ account, profile }) => {
           if (response.status === 200) {
             setLoading(false);
             toast({
-              title: "Offer created.",
-              description: "Offer successfully created.",
+              title: "Offer sended.",
+              description: "Offer successfully sended.",
               status: "success",
               duration: 9000,
               isClosable: true,
