@@ -76,12 +76,21 @@ export default function Home() {
                       <Flex alignItems={"center"}>
                         <Heading size="md">{profile.profileName}</Heading>
                         {profile.worldCoinVerify && (
-                          <Icon
-                            color="#1C9BEF"
-                            ml="10px"
-                            fontSize="20px"
-                            as={BsFillPatchCheckFill}
-                          />
+                          <Tooltip
+                            hasArrow
+                            label="Verified by World ID"
+                            bg="gray.300"
+                            color="black"
+                          >
+                            <Box>
+                              <Icon
+                                color="#1C9BEF"
+                                ml="10px"
+                                fontSize="20px"
+                                as={BsFillPatchCheckFill}
+                              />
+                            </Box>
+                          </Tooltip>
                         )}
                       </Flex>
                       <Text>
