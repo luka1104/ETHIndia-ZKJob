@@ -9,6 +9,7 @@ generator client {
 
 model User {
   id          Int      @id @default(autoincrement())
+  isVerified  Boolean  @default(false)
   address     String   @unique
   nickname    String
   isCompany   Boolean  @default(false)

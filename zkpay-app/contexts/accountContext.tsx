@@ -66,7 +66,7 @@ export const AccountProvider = ({ children }: Props) => {
         resolve(response)
         if(response.data) setProfile(response.data.profile)
         if(response.status === 200) setLoading(false)
-        if(!response.data.profile) router.replace('/create')
+        // if(!response.data.profile) router.replace('/create')
       })
       .catch(e => {
         reject(e)

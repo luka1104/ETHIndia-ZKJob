@@ -1,8 +1,8 @@
 -- CreateTable
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
+    "isVerified" BOOLEAN NOT NULL DEFAULT false,
     "address" TEXT NOT NULL,
-    "imagePath" TEXT NOT NULL,
     "nickname" TEXT NOT NULL,
     "isCompany" BOOLEAN NOT NULL DEFAULT false,
     "description" TEXT NOT NULL,
@@ -11,20 +11,20 @@ CREATE TABLE "User" (
 );
 
 -- CreateTable
-CREATE TABLE "IntroCard" (
+CREATE TABLE "Profile" (
     "id" SERIAL NOT NULL,
     "userId" INTEGER NOT NULL,
-    "imagePaths" TEXT[],
+    "imagePath" TEXT NOT NULL,
     "videoPath" TEXT NOT NULL,
 
-    CONSTRAINT "IntroCard_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Profile_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_address_key" ON "User"("address");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "IntroCard_userId_key" ON "IntroCard"("userId");
+CREATE UNIQUE INDEX "Profile_userId_key" ON "Profile"("userId");
 
 -- AddForeignKey
-ALTER TABLE "IntroCard" ADD CONSTRAINT "IntroCard_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Profile" ADD CONSTRAINT "Profile_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
