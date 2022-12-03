@@ -23,24 +23,6 @@ const Huddle = () => {
     width: "100%",
   };
 
-  const reactions = [
-    "😂",
-    "😢",
-    "😦",
-    "😍",
-    "🤔",
-    "👀",
-    "🙌",
-    "👍",
-    "👎",
-    "🔥",
-    "🍻",
-    "🚀",
-    "🎉",
-    "❤️",
-    "💯",
-  ];
-
   useEffect(() => {
     huddleIframeApp.on(HuddleAppEvent.PEER_JOIN, (data) =>
       console.log({ iframeData: data })
@@ -58,10 +40,11 @@ const Huddle = () => {
   return (
     <div className="App">
       <div className="container">
-        {address && query.address && (
+        {address && query.address && query.nickname && (
           <Chat
             account={address} //user address
             supportAddress={query.address as string} //support address
+            modalTitle={`Chat with ${query.nickname as string}`}
             apiKey={process.env.NEXT_PUBLIC_HUDDLE_KEY}
             env="staging"
           />
