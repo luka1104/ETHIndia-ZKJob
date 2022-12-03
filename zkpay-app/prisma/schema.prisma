@@ -8,19 +8,18 @@ generator client {
 }
 
 model User {
-  id          Int        @id @default(autoincrement())
-  address     String     @unique
-  imagePath   String?
+  id          Int      @id @default(autoincrement())
+  address     String   @unique
   nickname    String
-  isCompany   Boolean    @default(false)
+  isCompany   Boolean  @default(false)
   description String
-  IntroCard   IntroCard?
+  Profile     Profile?
 }
 
-model IntroCard {
-  id         Int      @id @default(autoincrement())
-  userId     Int      @unique
-  imagePaths String[]
-  videoPath  String
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+model Profile {
+  id        Int    @id @default(autoincrement())
+  userId    Int    @unique
+  imagePath String
+  videoPath String
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
