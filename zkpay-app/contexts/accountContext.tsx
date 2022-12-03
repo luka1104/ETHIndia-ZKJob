@@ -2,7 +2,7 @@ import React, { ReactNode, useEffect, useState } from 'react';
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import { Profile, User } from '@prisma/client';
-import { useAccount } from 'wagmi';
+import { useAccount, useClient, useConnect } from 'wagmi';
 
 type Props = {
   children: ReactNode
@@ -87,6 +87,40 @@ export const AccountProvider = ({ children }: Props) => {
     if(!address) return
     getUser()
   }, [address])
+
+  const { isConnected } = useAccount()
+  const { connectAsync, connectors } = useConnect()
+  const client = useClient()
+
+  const [isAutoConnecting, setIsAutoConnecting] = useState(false)
+
+  useEffect(() => {
+    if (isAutoConnecting) return
+    if (isConnected) return
+
+    setIsAutoConnecting(true)
+
+    const autoConnect = async () => {
+      const lastUsedConnector = client.storage?.getItem("wallet")
+
+      const sorted = lastUsedConnector ?
+        [...connectors].sort((x) =>
+          x.id === lastUsedConnector ? -1 : 1,
+        )
+        : connectors
+
+      for (const connector of sorted) {
+        if (!connector.ready || !connector.isAuthorized) continue
+        const isAuthorized = await connector.isAuthorized()
+        if (!isAuthorized) continue
+
+        await connectAsync({ connector })
+        break
+      }
+    }
+
+    autoConnect()
+  }, [])
 
   return (
     <AccountContext.Provider
