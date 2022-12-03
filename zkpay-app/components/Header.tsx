@@ -46,6 +46,7 @@ const Header: React.FC = () => {
                 </MenuButton>
                 <MenuList>
                   <MenuItem as={Link} href='/mypage' _hover={{textDecoration: 'none'}}>Mypage</MenuItem>
+                  <MenuItem as={Link} href='/company' _hover={{textDecoration: 'none'}}>Companies</MenuItem>
                   <MenuItem onClick={() => disconnect()}>disconnect</MenuItem>
                 </MenuList>
               </Menu>
