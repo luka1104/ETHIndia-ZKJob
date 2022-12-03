@@ -4,9 +4,11 @@ import React, { useState, useContext } from 'react'
 import axios from 'axios'
 import { useAccount } from 'wagmi';
 import { AccountContext } from 'contexts/accountContext';
+import { useRouter } from 'next/router';
 
 const Create: NextPage = () => {
   const { address } = useAccount();
+  const router = useRouter();
   const { setUser, setLoading } = useContext(AccountContext)
   const [nickname, setNickname] = useState<string>('')
   const [description, setDescription] = useState<string>('')
@@ -41,6 +43,7 @@ const Create: NextPage = () => {
             duration: 9000,
             isClosable: true,
           })
+          router.push('/mypage')
         }
         console.log(response);
       })
