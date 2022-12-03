@@ -233,6 +233,7 @@ const Mypage: NextPage = () => {
 
   useEffect(() => {
     if(query.success) {
+      setLoading(true)
       verify();
       console.log('verifing');
     }
