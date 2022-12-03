@@ -141,8 +141,8 @@ const Mypage: NextPage = () => {
           if (response.status === 200) {
             setLoading(false);
             toast({
-              title: "Account created.",
-              description: "Account successfully created.",
+              title: "Profile created.",
+              description: "Account Profile successfully created.",
               status: "success",
               duration: 9000,
               isClosable: true,
@@ -173,8 +173,8 @@ const Mypage: NextPage = () => {
         if(response.status === 200) {
           setLoading(false)
           toast({
-            title: 'Account created.',
-            description: 'Account successfully created.',
+            title: 'Verified!',
+            description: 'Account successfully verified.',
             status: 'success',
             duration: 9000,
             isClosable: true,
