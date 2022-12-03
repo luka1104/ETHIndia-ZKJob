@@ -303,19 +303,21 @@ const Mypage: NextPage = () => {
             <Text fontSize="lg" fontWeight="semibold" ml="10px">
               {nickname}
             </Text>
-            <Icon
-              color={user?.isVerified ? "#1C9BEF" : "red"}
-              ml="10px"
-              fontSize="20px"
-              as={user?.isVerified ? BsPatchCheckFill : BsPatchQuestion}
-              onClick={() => {
-                user &&
-                  !user.isVerified &&
-                  router.push(
-                    `${process.env.NEXT_PUBLIC_WORLD_ID_URI}${user.address}`
-                  );
-              }}
-            />
+            {profile && (
+              <Icon
+                color={user?.isVerified ? "#1C9BEF" : "red"}
+                ml="10px"
+                fontSize="20px"
+                as={user?.isVerified ? BsPatchCheckFill : BsPatchQuestion}
+                onClick={() => {
+                  user &&
+                    !user.isVerified &&
+                    router.push(
+                      `${process.env.NEXT_PUBLIC_WORLD_ID_URI}${user.address}`
+                    );
+                }}
+              />
+            )}
           </Flex>
         </Box>
         <Box>
