@@ -16,6 +16,7 @@
     "@lighthouse-web3/sdk": "^0.1.9",
     "@livepeer/react": "^1.5.6",
     "@prisma/client": "^4.7.1",
+    "@pushprotocol/uiweb": "^0.2.3",
     "@types/node": "18.11.10",
     "@types/react": "18.0.25",
     "@types/react-dom": "18.0.9",
