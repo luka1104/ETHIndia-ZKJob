@@ -1,8 +1,8 @@
 import type { AppProps } from 'next/app'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { ChakraProvider } from '@chakra-ui/react'
 import { getDefaultProvider } from 'ethers';
-import { createClient, WagmiConfig } from 'wagmi';
+import { createClient, useAccount, useClient, useConnect, WagmiConfig } from 'wagmi';
 import { AccountProvider } from 'contexts/accountContext';
 import { Layout } from 'layout';
 import {

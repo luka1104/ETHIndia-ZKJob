@@ -11,10 +11,26 @@ const getProfile = async (id: number) => {
   return resp
 }
 
+const getCompanyProfile = async (id: number) => {
+  console.log(id);
+  const resp = await prisma.companyProfile.findUnique({
+    where: {
+      companyId: id,
+    },
+  });
+  return resp
+}
+
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   console.log(req.body);
-  const resp = await getProfile(req.body)
-  console.log(resp);
-  res.status(200).json({"profile": resp})
+  if(req.body.isCompany) {
+    const resp = await getCompanyProfile(req.body.userId)
+    console.log(resp);
+    res.status(200).json({"profile": resp})
+  } else {
+    const resp = await getProfile(req.body.userId)
+    console.log(resp);
+    res.status(200).json({"profile": resp})
+  }
 };
 export default handler;

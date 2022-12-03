@@ -20,13 +20,13 @@ import { BsFillPatchCheckFill } from "react-icons/bs";
 import { LivepeerPlayer } from "components/LivepeerPlayer";
 import { NextPage } from "next";
 import type { GetServerSideProps } from 'next';
-import prisma from '../lib/prisma';
-import { User, Profile } from "@prisma/client";
+import prisma from 'lib/prisma';
+import { Company, CompanyProfile } from "@prisma/client";
 
 export const getServerSideProps: GetServerSideProps<Props> = async () => {
-  const usersRaw = await prisma.user.findMany()
+  const usersRaw = await prisma.company.findMany()
   const users = JSON.parse(JSON.stringify(usersRaw));
-  const profilesRaw = await prisma.profile.findMany()
+  const profilesRaw = await prisma.companyProfile.findMany()
   const profiles = JSON.parse(JSON.stringify(profilesRaw));
   return {
     props: {
@@ -37,8 +37,8 @@ export const getServerSideProps: GetServerSideProps<Props> = async () => {
 };
 
 type Props = {
-  users: User[];
-  profiles: Profile[]
+  users: Company[];
+  profiles: CompanyProfile[]
 };
 
 const Index: NextPage<Props> = ({ users, profiles }) => {
@@ -48,8 +48,8 @@ const Index: NextPage<Props> = ({ users, profiles }) => {
     <>
       <Box maxW="85%" mx="auto">
         <Wrap spacing="5" my="10">
-          {users.map((user: User, key: number) => {
-            let profile = profiles.find(p => p.userId === user.id)
+          {users.map((user: Company, key: number) => {
+            let profile = profiles.find(p => p.companyId === user.id)
             console.log(profile);
             if(!profile) return
             return (
@@ -106,7 +106,7 @@ const Index: NextPage<Props> = ({ users, profiles }) => {
                         colorScheme="blue"
                         m="auto"
                         onClick={() =>
-                          router.push(`/profile?id=${user.id}`)
+                          router.push(`/company/profile?id=${user.id}`)
                         }
                       >
                         Learn More & Contact

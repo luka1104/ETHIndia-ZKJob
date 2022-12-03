@@ -8,13 +8,31 @@ generator client {
 }
 
 model User {
-  id          Int      @id @default(autoincrement())
-  isVerified  Boolean  @default(false)
-  address     String   @unique
+  id          Int           @id @default(autoincrement())
+  isVerified  Boolean       @default(false)
+  address     String        @unique
   nickname    String
-  isCompany   Boolean  @default(false)
   description String
   Profile     Profile?
+  UserCompany UserCompany[]
+}
+
+model UserCompany {
+  id        Int     @id @default(autoincrement())
+  userId    Int
+  companyId Int
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+}
+
+model Company {
+  id          Int             @id @default(autoincrement())
+  isVerified  Boolean         @default(false)
+  address     String          @unique
+  nickname    String
+  description String
+  Profile     CompanyProfile?
+  UserCompany UserCompany[]
 }
 
 model Profile {
@@ -23,4 +41,12 @@ model Profile {
   imagePath String
   videoPath String
   user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model CompanyProfile {
+  id        Int     @id @default(autoincrement())
+  companyId Int     @unique
+  imagePath String
+  videoPath String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
 }
