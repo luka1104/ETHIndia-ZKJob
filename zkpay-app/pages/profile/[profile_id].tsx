@@ -9,7 +9,10 @@ import {
   Text,
   Flex,
   useColorMode,
+  Wrap,
+  WrapItem,
 } from "@chakra-ui/react";
+import { RiMailSendLine } from "react-icons/ri";
 
 const Profile: NextPage = () => {
   const { colorMode } = useColorMode();
@@ -46,38 +49,43 @@ const Profile: NextPage = () => {
             in culpa qui officia deserunt nollit anin id est laborun.
           </Text>
         </Box>
-        <Center>
-          <Button
-            rightIcon={
-              <Image
-                src={
-                  colorMode === "light"
-                    ? "/images/push.png"
-                    : "/images/push_w.png"
-                }
-                h="25px"
-              />
-            }
-            m="5"
-          >
-            Chat with{" "}
-          </Button>
-          <Button
-            rightIcon={
-              <Image
-                src={
-                  colorMode === "light"
-                    ? "/images/huddle01_b.png"
-                    : "/images/huddle01.png"
-                }
-                h="20px"
-              />
-            }
-            m="5"
-          >
-            Meeting with{" "}
-          </Button>
-        </Center>
+        <Wrap spacing="5" my="10">
+          <WrapItem>
+            <Button
+              rightIcon={
+                <Image
+                  src={
+                    colorMode === "light"
+                      ? "/images/push.png"
+                      : "/images/push_w.png"
+                  }
+                  h="25px"
+                />
+              }
+            >
+              Chat with{" "}
+            </Button>
+          </WrapItem>
+          <WrapItem>
+            <Button
+              rightIcon={
+                <Image
+                  src={
+                    colorMode === "light"
+                      ? "/images/huddle01_b.png"
+                      : "/images/huddle01.png"
+                  }
+                  h="20px"
+                />
+              }
+            >
+              Meeting with{" "}
+            </Button>
+          </WrapItem>
+          <WrapItem>
+            <Button rightIcon={<RiMailSendLine />}>Send a offer</Button>
+          </WrapItem>
+        </Wrap>
       </Box>
     </>
   );
