@@ -1,24 +1,18 @@
 import { useRouter } from "next/router";
 import {
-  Avatar,
   Button,
   Box,
-  Center,
   Card,
-  CardHeader,
   CardBody,
   CardFooter,
-  Image,
   Icon,
   Text,
   Flex,
-  useColorMode,
   Wrap,
   WrapItem,
   Stack,
   Heading,
   Divider,
-  ButtonGroup,
   Tooltip,
 } from "@chakra-ui/react";
 import { BsFillPatchCheckFill } from "react-icons/bs";
@@ -60,7 +54,7 @@ export default function Home() {
   return (
     <>
       <Box maxW="85%" mx="auto">
-        <Wrap>
+        <Wrap spacing="5" my="10">
           {profiles.map((profile) => (
             <>
               <WrapItem>
