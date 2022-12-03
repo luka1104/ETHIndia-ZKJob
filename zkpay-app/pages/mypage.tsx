@@ -202,10 +202,6 @@ const Mypage: NextPage = () => {
       verifyUser()
     }
   }
-  if(query.success) {
-    verify();
-    console.log('verifing');
-  }
 
   useEffect(() => {
     if (!videoPath) return;
@@ -234,6 +230,13 @@ const Mypage: NextPage = () => {
     setImagePath(profile.imagePath);
     setVideoPath(profile.videoPath);
   }, [profile]);
+
+  useEffect(() => {
+    if(query.success) {
+      verify();
+      console.log('verifing');
+    }
+  }, [query])
 
   return (
     <>
