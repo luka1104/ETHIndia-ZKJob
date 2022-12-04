@@ -28,9 +28,35 @@ import { useRouter } from "next/router";
 import { useAccount, useConnect } from "wagmi";
 import { InjectedConnector } from "@wagmi/core";
 import * as jose from 'jose';
+import type { GetServerSideProps } from 'next';
+import prisma from '../lib/prisma';
+import { Company, User, UserCompany } from "@prisma/client";
 
-const Mypage: NextPage = () => {
+export const getServerSideProps: GetServerSideProps<Props> = async () => {
+  const offersRaw = await prisma.userCompany.findMany()
+  const offers = JSON.parse(JSON.stringify(offersRaw));
+  const accountsRaw = await prisma.user.findMany()
+  const accounts = JSON.parse(JSON.stringify(accountsRaw));
+  const companiesRaw = await prisma.company.findMany()
+  const companies = JSON.parse(JSON.stringify(companiesRaw));
+  return {
+    props: {
+      offers,
+      accounts,
+      companies,
+    },
+  };
+};
+
+type Props = {
+  offers: UserCompany[];
+  accounts: User[];
+  companies: Company[];
+};
+
+const Mypage: NextPage<Props> = ({ offers, accounts, companies }) => {
   const { user, profile, setUser, setLoading, isCompany } = useContext(AccountContext)
+  const { address } = useAccount();
   const router = useRouter();
   const { query } = useRouter();
   const toast = useToast()
@@ -42,6 +68,7 @@ const Mypage: NextPage = () => {
   const [imagePath, setImagePath] = useState<string>('')
   const [isUpdated, setIsUpdated] = useState<boolean>(false)
   const [verified, setVerified] = useState(false);
+  const [amount, setAmount] = useState<number>()
   const { isConnected } = useAccount();
   const { connect } = useConnect({
     connector: new InjectedConnector(),
@@ -188,6 +215,41 @@ const Mypage: NextPage = () => {
       })
     })
   }
+
+  const handleBobTransfer = async (addressTwo: string) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const data = {
+      amount: amount,
+      address: address,
+      addressTwo: addressTwo,
+    }
+    return new Promise((resolve, reject) => {
+      axios
+        .post("/api/zkbob/payment", data, config)
+        .then((response) => {
+          resolve(response);
+          if (response.status === 200) {
+            toast({
+              title: "Private Transfer Success.",
+              description: "Private Transfer Success.",
+              status: "success",
+              duration: 9000,
+              isClosable: true,
+            });
+          }
+          console.log(response);
+        })
+        .catch((e) => {
+          reject(e);
+          throw new Error(e);
+        });
+    });
+  };
+
   const token = query.verification_jwt || '';
 
   const verify = async () => {
@@ -367,6 +429,46 @@ const Mypage: NextPage = () => {
               Save Changes
             </Button>
           </Center>
+        )}
+        {isCompany ? (
+          <>
+            <Center mt='40px' fontWeight='bold' fontSize='xl'>
+              Manage Employees
+            </Center>
+            {user && offers && (
+              offers.filter(o => o.companyId === user.id).map((val: UserCompany, key: number) => {
+                let account = accounts.find(a => a.id === val.userId)
+                if(!account) return (<></>)
+                return (
+                  <>
+                    <Center key={key}>
+                      {account!.nickname} :
+                      <Box maxW="500">
+                        <Flex>
+                          <Input placeholder="Amount" m="3" type='number' value={amount} onChange={(e) => {setAmount(JSON.parse(e.target.value))}} />
+                          <Box>
+                            <Button
+                              rightIcon={<Image src={"/images/bob.png"} h="20px" />}
+                              onClick={() => handleBobTransfer(account!.address)}
+                              m="3"
+                            >
+                              Send BOB
+                            </Button>
+                          </Box>
+                        </Flex>
+                      </Box>
+                    </Center>
+                  </>
+                )
+              })
+            )}
+          </>
+        ) : (
+          <>
+            <Center mt='40px' fontWeight='bold' fontSize='xl'>
+              Manage Salary
+            </Center>
+          </>
         )}
       </Box>
     </>
