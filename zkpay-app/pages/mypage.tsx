@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext, useRef } from "react";
 import axios from "axios";
 import ethers, { providers } from "ethers";
 //@ts-ignore
-// import lighthouse from "@lighthouse-web3/sdk";
+import lighthouse from "@lighthouse-web3/sdk";
 import { NextPage } from "next";
 import {
   Box,
@@ -113,11 +113,11 @@ const Mypage: NextPage<Props> = ({ offers, accounts, companies }) => {
     ).data.accessToken;
 
     // Push file to lighthouse node
-    // const output = await lighthouse.upload(e, accessToken);
-    // console.log("File Status:", output);
+    const output = await lighthouse.upload(e, accessToken);
+    console.log("File Status:", output);
 
-    // console.log("Visit at https://ipfs.io/ipfs/" + output.data.Hash);
-    // setVideoPath("https://ipfs.io/ipfs/" + output.data.Hash);
+    console.log("Visit at https://ipfs.io/ipfs/" + output.data.Hash);
+    setVideoPath("https://ipfs.io/ipfs/" + output.data.Hash);
   };
 
   const deployImage = async (e: any) => {
@@ -138,11 +138,11 @@ const Mypage: NextPage<Props> = ({ offers, accounts, companies }) => {
     ).data.accessToken;
 
     // Push file to lighthouse node
-    // const output = await lighthouse.upload(e, accessToken);
-    // console.log("File Status:", output);
+    const output = await lighthouse.upload(e, accessToken);
+    console.log("File Status:", output);
 
-    // console.log("Visit at https://ipfs.io/ipfs/" + output.data.Hash);
-    // setImagePath("https://ipfs.io/ipfs/" + output.data.Hash);
+    console.log("Visit at https://ipfs.io/ipfs/" + output.data.Hash);
+    setImagePath("https://ipfs.io/ipfs/" + output.data.Hash);
   };
 
   const handleSubmit = async () => {
