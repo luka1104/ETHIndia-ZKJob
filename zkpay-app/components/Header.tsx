@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { Box, Center, Button, Icon, Text, Link, useColorMode, Menu, MenuButton, MenuList, MenuItem } from '@chakra-ui/react';
+import { Box, Center, Button, Icon, Image, Link, useColorMode, Menu, MenuButton, MenuList, MenuItem, Flex } from '@chakra-ui/react';
 import Head from 'next/head';
 import NextLink from 'next/link';
 import { FiSun, FiMoon } from 'react-icons/fi';
@@ -28,7 +28,10 @@ const Header: React.FC = () => {
       <Box w="100%" h="60px" p="0 30px 0 0" borderBottom='1px solid' borderColor={colorMode === 'light' ? '#F5F5F5' : '#1A202C'}>
         <Center h="100%" justifyContent="space-between">
           <Link fontWeight='bold' fontSize='30px' pl='20px' href='/' _hover={{textDecoration: 'none'}}>
-            ZKJob
+            <Flex>
+              <Image src='/images/ZKJob.png' alt='ZKJob' w='50px' mr='10px' />
+              ZKJob
+            </Flex>
           </Link>
           <Box>
             {/* <NextLink href="/upload" passHref>
