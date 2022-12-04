@@ -452,7 +452,7 @@ const Mypage: NextPage<Props> = ({ offers, accounts, companies }) => {
                               onClick={() => handleBobTransfer(account!.address)}
                               m="3"
                             >
-                              Send BOB
+                              Send Salary with BOB
                             </Button>
                           </Box>
                         </Flex>
