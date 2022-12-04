@@ -27,7 +27,7 @@ import { useContext } from "react";
 import { AccountContext } from "contexts/accountContext";
 import axios from "axios";
 import { ethers } from "ethers";
-import abi from "../utils/pushNote.json";
+import abi from "utils/pushNote.json";
 
 export const getServerSideProps: GetServerSideProps<Props> = async (
   context
