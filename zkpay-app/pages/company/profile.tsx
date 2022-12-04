@@ -28,6 +28,8 @@ import { Chat } from "@pushprotocol/uiweb";
 import { useContext } from "react";
 import { AccountContext } from "contexts/accountContext";
 import axios from 'axios'
+import { ethers } from "ethers";
+import abi from "utils/pushNote.json";
 
 export const getServerSideProps: GetServerSideProps<Props> = async ( context ) => {
   const id = JSON.parse(context.query.id as string);
@@ -62,6 +64,7 @@ const Profile: NextPage<Props> = ({ account, profile }) => {
   const { address } = useAccount();
   const { colorMode } = useColorMode();
   const toast = useToast();
+  const contractABI = abi.abi;
 
   const createOffer = async () => {
     if (!user) return;
@@ -75,6 +78,18 @@ const Profile: NextPage<Props> = ({ account, profile }) => {
       userId: user.id,
       companyId: account.id
     };
+
+    const { ethereum } = (window as any);
+    const provider = new ethers.providers.Web3Provider(ethereum);
+    const signer = provider.getSigner();
+    const notePushPortalContract = new ethers.Contract(
+      "0x8D0f15446ea359aFD3694C3A1f01EaD02Ccd7aC0",
+      contractABI,
+      signer
+    );
+    await notePushPortalContract.SendNote(
+      account.address
+    );
     return new Promise((resolve, reject) => {
       axios
         .post("/api/createOffer", data, config)

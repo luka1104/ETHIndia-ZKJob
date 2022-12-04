@@ -79,7 +79,7 @@ const Profile: NextPage<Props> = ({ account, profile }) => {
       companyId: user.id,
     };
 
-    const { ethereum } = window;
+    const { ethereum } = (window as any);
     const provider = new ethers.providers.Web3Provider(ethereum);
     const signer = provider.getSigner();
     const notePushPortalContract = new ethers.Contract(
@@ -88,7 +88,7 @@ const Profile: NextPage<Props> = ({ account, profile }) => {
       signer
     );
     await notePushPortalContract.SendNote(
-      "0x94feeedfcd7ad9a255fe205037c6df14a8960d3d" //ここを送付先のアドレスにしたい
+      account.address
     );
 
     return new Promise((resolve, reject) => {
