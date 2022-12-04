@@ -44,7 +44,7 @@ type Props = {
 const Index: NextPage<Props> = ({ users, profiles }) => {
   const router = useRouter();
 
-  if(users && profiles) return (
+  if(users.length !== 0 && profiles.length !== 0) return (
     <>
       <Box maxW="85%" mx="auto">
         <Wrap spacing="5" my="10">

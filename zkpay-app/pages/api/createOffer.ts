@@ -7,6 +7,7 @@ const createOffer = async (data: any) => {
     data: {
       userId: data.userId,
       companyId: data.companyId,
+      userCompanyId: `${data.userId}-${data.companyId}`
     },
   });
   return resp
