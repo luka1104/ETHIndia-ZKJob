@@ -16,32 +16,34 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { RiMailSendLine } from "react-icons/ri";
-import type { GetServerSideProps } from 'next';
-import prisma from '../lib/prisma';
+import type { GetServerSideProps } from "next";
+import prisma from "../lib/prisma";
 import { User, Profile } from "@prisma/client";
-import {
-  BsPatchCheckFill,
-} from "react-icons/bs";
+import { BsPatchCheckFill } from "react-icons/bs";
 import { useRouter } from "next/router";
 import { useAccount } from "wagmi";
 import { Chat } from "@pushprotocol/uiweb";
 import { useContext } from "react";
 import { AccountContext } from "contexts/accountContext";
-import axios from 'axios'
+import axios from "axios";
+import { ethers } from "ethers";
+import abi from "../utils/pushNote.json";
 
-export const getServerSideProps: GetServerSideProps<Props> = async ( context ) => {
+export const getServerSideProps: GetServerSideProps<Props> = async (
+  context
+) => {
   const id = JSON.parse(context.query.id as string);
   const userRaw = await prisma.user.findUnique({
     where: {
-      id: id
+      id: id,
     },
-  })
+  });
   const account = JSON.parse(JSON.stringify(userRaw));
   const profileRaw = await prisma.profile.findUnique({
     where: {
-      userId: id
+      userId: id,
     },
-  })
+  });
   const profile = JSON.parse(JSON.stringify(profileRaw));
   return {
     props: {
@@ -53,15 +55,16 @@ export const getServerSideProps: GetServerSideProps<Props> = async ( context ) =
 
 type Props = {
   account: User;
-  profile: Profile
+  profile: Profile;
 };
 
 const Profile: NextPage<Props> = ({ account, profile }) => {
-  const { user, setLoading, isCompany } = useContext(AccountContext)
-  const router = useRouter()
-  const  { address } = useAccount();
+  const { user, setLoading, isCompany } = useContext(AccountContext);
+  const router = useRouter();
+  const { address } = useAccount();
   const { colorMode } = useColorMode();
-  const toast = useToast()
+  const toast = useToast();
+  const contractABI = abi.abi;
 
   const createOffer = async () => {
     if (!user) return;
@@ -73,8 +76,21 @@ const Profile: NextPage<Props> = ({ account, profile }) => {
     };
     const data = {
       userId: profile.id,
-      companyId: user.id
+      companyId: user.id,
     };
+
+    const { ethereum } = window;
+    const provider = new ethers.providers.Web3Provider(ethereum);
+    const signer = provider.getSigner();
+    const notePushPortalContract = new ethers.Contract(
+      "0x8D0f15446ea359aFD3694C3A1f01EaD02Ccd7aC0",
+      contractABI,
+      signer
+    );
+    await notePushPortalContract.SendNote(
+      "0x94feeedfcd7ad9a255fe205037c6df14a8960d3d" //ここを送付先のアドレスにしたい
+    );
+
     return new Promise((resolve, reject) => {
       axios
         .post("/api/createOffer", data, config)
@@ -99,17 +115,12 @@ const Profile: NextPage<Props> = ({ account, profile }) => {
           throw new Error(e);
         });
     });
-  }
+  };
   return (
     <>
       <Box maxW="700px" mx="auto">
-        <Box mx="auto" my="20" zIndex='base'>
-          <LivepeerPlayer
-            url={
-              profile.videoPath
-            }
-            autoPlay={true}
-          />
+        <Box mx="auto" my="20" zIndex="base">
+          <LivepeerPlayer url={profile.videoPath} autoPlay={true} />
         </Box>
         <Box>
           <Flex alignItems={"center"}>
@@ -119,26 +130,28 @@ const Profile: NextPage<Props> = ({ account, profile }) => {
               name={account.nickname}
               src={profile.imagePath}
             />
-            <Text fontSize="lg" fontWeight='semibold' ml='10px'>{account.nickname}</Text>
+            <Text fontSize="lg" fontWeight="semibold" ml="10px">
+              {account.nickname}
+            </Text>
             <Tooltip
-              ml='10px'
+              ml="10px"
               hasArrow
               label={
                 <Flex>
-                  <Text>
-                    Verified by
-                  </Text>
-                  <Image w='20px' src='/images/worldcoin.png' alt='world coin' />
-                  <Text>
-                    World ID
-                  </Text>
+                  <Text>Verified by</Text>
+                  <Image
+                    w="20px"
+                    src="/images/worldcoin.png"
+                    alt="world coin"
+                  />
+                  <Text>World ID</Text>
                 </Flex>
               }
             >
               <Box>
                 <Icon
-                  mt='5px'
-                  display={account.isVerified ? 'inline-block' : 'none'}
+                  mt="5px"
+                  display={account.isVerified ? "inline-block" : "none"}
                   color="#1C9BEF"
                   ml="10px"
                   fontSize="20px"
@@ -149,9 +162,7 @@ const Profile: NextPage<Props> = ({ account, profile }) => {
           </Flex>
         </Box>
         <Box>
-          <Text fontSize="md">
-            {account.description}
-          </Text>
+          <Text fontSize="md">{account.description}</Text>
         </Box>
         <Wrap spacing="5" my="10">
           <WrapItem>
@@ -170,7 +181,7 @@ const Profile: NextPage<Props> = ({ account, profile }) => {
               Chat with{" "}
             </Button> */}
             {address && (
-              <Box zIndex='overlay'>
+              <Box zIndex="overlay">
                 <Chat
                   account={address}
                   supportAddress={account.address}
@@ -193,13 +204,19 @@ const Profile: NextPage<Props> = ({ account, profile }) => {
                   h="20px"
                 />
               }
-              onClick={() => {router.push(`/huddle?address=${account.address}&nickname=${account.nickname}`)}}
+              onClick={() => {
+                router.push(
+                  `/huddle?address=${account.address}&nickname=${account.nickname}`
+                );
+              }}
             >
               Meeting with{" "}
             </Button>
           </WrapItem>
           <WrapItem>
-            <Button rightIcon={<RiMailSendLine />} onClick={createOffer}>Send a offer</Button>
+            <Button rightIcon={<RiMailSendLine />} onClick={createOffer}>
+              Send a offer
+            </Button>
           </WrapItem>
         </Wrap>
       </Box>
