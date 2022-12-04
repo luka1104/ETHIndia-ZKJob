@@ -216,7 +216,7 @@ const Mypage: NextPage<Props> = ({ offers, accounts, companies }) => {
     })
   }
 
-  const handleBobTransfer = async (account: Company) => {
+  const handleBobTransfer = async (addressFrom: string) => {
     if(!user) return
     const config = {
       headers: {
@@ -225,7 +225,7 @@ const Mypage: NextPage<Props> = ({ offers, accounts, companies }) => {
     };
     const data = {
       amount: amount,
-      addressTo: account.address,
+      addressTo: addressFrom,
       addressFrom: address,
       // nameTo: account.nickname,
       // nameFrom: user.nickname,
@@ -452,7 +452,7 @@ const Mypage: NextPage<Props> = ({ offers, accounts, companies }) => {
                           <Box>
                             <Button
                               rightIcon={<Image src={"/images/bob.png"} h="20px" />}
-                              onClick={() => handleBobTransfer(account!)}
+                              onClick={() => handleBobTransfer(account!.address)}
                               m="3"
                             >
                               Send Salary with BOB
@@ -485,7 +485,7 @@ const Mypage: NextPage<Props> = ({ offers, accounts, companies }) => {
                           <Box>
                             <Button
                               rightIcon={<Image src={"/images/bob.png"} h="20px" />}
-                              onClick={() => handleBobTransfer(company!)}
+                              onClick={() => handleBobTransfer(company!.address)}
                               m="3"
                             >
                               Send Salary with BOB
