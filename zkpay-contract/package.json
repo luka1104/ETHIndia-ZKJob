@@ -11,10 +11,17 @@
   "license": "ISC",
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^2.0.0",
-    "hardhat": "^2.12.3"
+    "hardhat": "^2.12.3",
+    "dotenv": "^16.0.1"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.8.0",
-    "web3": "^1.8.1"
+    "web3": "^1.8.1",
+    "@chainlink/contracts": "^0.5.1",
+    "axios": "^0.27.2",
+    "colors": "^1.4.0",
+    "csv-stringify": "^6.2.0",
+    "hardhat-contract-sizer": "^2.6.1",
+    "readline-sync": "^1.4.10"
   }
 }
