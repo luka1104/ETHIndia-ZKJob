@@ -468,6 +468,33 @@ const Mypage: NextPage<Props> = ({ offers, accounts, companies }) => {
             <Center mt='40px' fontWeight='bold' fontSize='xl'>
               Manage Salary
             </Center>
+            {user && offers && (
+              offers.filter(o => o.userId === user.id).map((val: UserCompany, key: number) => {
+                let company = companies.find(a => a.id === val.companyId)
+                if(!company) return (<></>)
+                return (
+                  <>
+                    <Center key={key}>
+                      {company!.nickname} :
+                      <Box maxW="500">
+                        <Flex>
+                          <Input placeholder="Amount" m="3" type='number' value={amount} onChange={(e) => {setAmount(JSON.parse(e.target.value))}} />
+                          <Box>
+                            <Button
+                              rightIcon={<Image src={"/images/bob.png"} h="20px" />}
+                              onClick={() => handleBobTransfer(company!.address)}
+                              m="3"
+                            >
+                              Send Salary with BOB
+                            </Button>
+                          </Box>
+                        </Flex>
+                      </Box>
+                    </Center>
+                  </>
+                )
+              })
+            )}
           </>
         )}
       </Box>
