@@ -227,8 +227,8 @@ const Mypage: NextPage<Props> = ({ offers, accounts, companies }) => {
       amount: amount,
       addressTo: account.address,
       addressFrom: address,
-      nameTo: account.nickname,
-      nameFrom: user.nickname,
+      // nameTo: account.nickname,
+      // nameFrom: user.nickname,
     }
     return new Promise((resolve, reject) => {
       axios
